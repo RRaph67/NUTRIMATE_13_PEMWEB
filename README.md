@@ -8,7 +8,7 @@
   <br />
 
   ![Platform](https://img.shields.io/badge/Platform-Web-4A90E2?style=for-the-badge)
-  ![Framework](https://img.shields.io/badge/Framework-Laravel%2012-FF2D20?style=for-the-badge&logo=laravel)
+  ![Framework](https://img.shields.io/badge/Framework-Laravel%2013-FF2D20?style=for-the-badge&logo=laravel)
   ![Language](https://img.shields.io/badge/Language-PHP%208.3+-777BB4?style=for-the-badge&logo=php)
   ![Database](https://img.shields.io/badge/Database-PostgreSQL%20(Supabase)-336791?style=for-the-badge&logo=postgresql)
   ![Build](https://img.shields.io/badge/Bundler-Vite-646CFF?style=for-the-badge&logo=vite)
