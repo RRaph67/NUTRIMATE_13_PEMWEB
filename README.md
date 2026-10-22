@@ -34,7 +34,7 @@
 | --- | --- |
 | Application Type | Web Application (Full-Stack MVC) |
 | Primary Platform | Desktop & Mobile Browser (Mobile-First UI) |
-| Framework | Laravel 12 (PHP 8.3+) |
+| Framework | Laravel 13 (PHP 8.3+) |
 | Database | PostgreSQL (Supabase Cloud Database) |
 | Course / Subject | Pemrograman Web (Praktikum Proyek Akhir) |
 
