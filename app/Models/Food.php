@@ -65,6 +65,8 @@ class Food extends Model
         'termurah' => ['column' => 'price', 'direction' => 'asc'],
         'termahal' => ['column' => 'price', 'direction' => 'desc'],
         'kalori' => ['column' => 'calories', 'direction' => 'desc'],
+        'cheap' => ['column' => 'price', 'direction' => 'asc'],
+        'cal' => ['column' => 'calories', 'direction' => 'asc'],
     ];
 
     /**

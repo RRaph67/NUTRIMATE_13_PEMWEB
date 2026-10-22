@@ -1,119 +1,140 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Saya — Nutrimate')
+@section('title', 'Profil — NutriMate')
 
 @section('content')
-    <div class="page-header">
-        <div>
-            <h1>Profil saya</h1>
-            <p>Informasi akun dan pengaturan profil Anda.</p>
+@php
+    $name    = $user->profile?->full_name ?? $user->name;
+    $email   = $user->email;
+    $initial = mb_strtoupper(mb_substr(trim($name) !== '' ? trim($name) : 'N', 0, 1));
+
+    $eyeSvg  = '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg>';
+    $lockSvg = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+@endphp
+
+<div class="pf-container">
+    {{-- 1. Kartu Identitas Pengguna (Atas) --}}
+    <section class="pf-card pf-user-card" aria-label="Informasi Pengguna">
+        <div class="pf-avatar">{{ $initial }}</div>
+        <div class="pf-user-info">
+            <span class="pf-name">{{ $name }}</span>
+            <span class="pf-email">{{ $email }}</span>
         </div>
-    </div>
+    </section>
 
-    <div class="panel">
-        <h2 style="font-size: 1.15rem; margin-bottom: 16px;">Informasi Akun</h2>
-        <dl class="profile-list">
-            <div>
-                <dt>ID user</dt>
-                <dd class="mono">{{ $user->id }}</dd>
-            </div>
-            <div>
-                <dt>Nama lengkap</dt>
-                <dd>{{ $user->profile?->full_name ?? $user->name }}</dd>
-            </div>
-            <div>
-                <dt>Email</dt>
-                <dd>{{ $user->email }}</dd>
-            </div>
-            <div>
-                <dt>Terdaftar sejak</dt>
-                <dd>{{ $user->created_at?->translatedFormat('d F Y') ?? '-' }}</dd>
-            </div>
-        </dl>
-    </div>
+    {{-- Grid Form Horizontal (Kiri: Data Diri, Kanan: Keamanan) --}}
+    <div class="pf-form-grid">
+        {{-- 2. Kartu Data Diri (Kiri) --}}
+        <section class="pf-card" id="data-diri">
+            <div class="pf-card-head">
+            <h2>Data Diri</h2>
+            <p>Kamu bisa mengubah nama, sedangkan email terkunci.</p>
+        </div>
 
-    <div class="panel" style="margin-top: 24px;">
-        <h2 style="font-size: 1.15rem; margin-bottom: 8px;">Ubah Nama Profil</h2>
-        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 20px;">Perbarui nama lengkap yang ditampilkan di profil akun Anda.</p>
+        @if ($errors->has('name'))
+            <div class="form-error" role="alert">{{ $errors->first('name') }}</div>
+        @endif
 
-        <form action="{{ route('profile.update') }}" method="POST" novalidate>
+        <form method="POST" action="{{ route('profile.update') }}" novalidate>
             @csrf
             @method('PUT')
 
-            <div class="form-grid">
-                <div class="field">
-                    <label for="name">
-                        Nama lengkap <span class="required" aria-hidden="true">*</span>
-                    </label>
-                    <input id="name" name="name" type="text"
-                        value="{{ old('name', $user->profile?->full_name ?? $user->name) }}"
-                        autocomplete="name" placeholder="Nama lengkap Anda" required minlength="3" maxlength="100"
-                        @error('name') aria-invalid="true" aria-describedby="name_error" @enderror>
-                    @error('name')
-                        <p class="field-error" id="name_error">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="pf-fields">
+                <label class="field" for="name">
+                    <span>Nama Lengkap</span>
+                    <input type="text" name="name" id="name"
+                        value="{{ old('name', $name) }}"
+                        maxlength="60" autocomplete="name" required>
+                </label>
+
+                <label class="field" for="email_readonly">
+                    <span>Email</span>
+                    <div class="lock-wrap">
+                        <input type="email" id="email_readonly"
+                            value="{{ $email }}"
+                            placeholder="Email belum tersedia"
+                            readonly aria-readonly="true" tabindex="-1">
+                        <i class="lock-ic" aria-hidden="true">{!! $lockSvg !!}</i>
+                    </div>
+                    <small class="hint">Email tidak dapat diubah.</small>
+                </label>
             </div>
 
-            <div class="btn-row" style="margin-top: 18px">
-                <button type="submit" class="btn btn-primary">Simpan Nama</button>
+            <div class="pf-card-footer">
+                <button type="submit" class="btn-auth btn-auth--full">Simpan Perubahan</button>
             </div>
         </form>
-    </div>
+    </section>
 
-    <div class="panel" style="margin-top: 24px;">
-        <h2 style="font-size: 1.15rem; margin-bottom: 8px;">Ubah Password</h2>
-        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 20px;">Pastikan akun Anda menggunakan password yang aman dan sulit ditebak.</p>
+    {{-- 3. Kartu Keamanan (Bawah) --}}
+    <section class="pf-card" id="keamanan">
+        <div class="pf-card-head">
+            <h2>Keamanan</h2>
+            <p>Ganti password untuk menjaga akunmu tetap aman.</p>
+        </div>
 
-        <form action="{{ route('profile.password.update') }}" method="POST" novalidate>
+        @if ($errors->has('current_password') || $errors->has('password'))
+            <div class="form-error" role="alert">
+                {{ $errors->first('current_password') ?: $errors->first('password') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('profile.password.update') }}" novalidate>
             @csrf
             @method('PUT')
 
-            <div class="form-grid">
-                <div class="field">
-                    <label for="current_password">
-                        Password saat ini <span class="required" aria-hidden="true">*</span>
-                    </label>
-                    <input id="current_password" name="current_password" type="password"
-                        autocomplete="current-password" required
-                        @error('current_password') aria-invalid="true" aria-describedby="current_password_error" @enderror>
-                    @error('current_password')
-                        <p class="field-error" id="current_password_error">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="pf-fields">
+                <label class="field" for="current_password">
+                    <span>Password Lama</span>
+                    <div class="pw-wrap">
+                        <input type="password" name="current_password" id="current_password"
+                            placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                            {!! $eyeSvg !!}
+                        </button>
+                    </div>
+                </label>
 
-                <div class="field">
-                    <label for="password">
-                        Password baru <span class="required" aria-hidden="true">*</span>
-                    </label>
-                    <input id="password" name="password" type="password"
-                        autocomplete="new-password" required minlength="8"
-                        @error('password') aria-invalid="true" aria-describedby="password_error" @enderror>
-                    @error('password')
-                        <p class="field-error" id="password_error">{{ $message }}</p>
-                    @enderror
-                </div>
+                <label class="field" for="password">
+                    <span>Password Baru</span>
+                    <div class="pw-wrap">
+                        <input type="password" name="password" id="password"
+                            placeholder="Minimal 8 karakter" autocomplete="new-password"
+                            minlength="8" required>
+                        <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                            {!! $eyeSvg !!}
+                        </button>
+                    </div>
+                </label>
 
-                <div class="field">
-                    <label for="password_confirmation">
-                        Konfirmasi password baru <span class="required" aria-hidden="true">*</span>
-                    </label>
-                    <input id="password_confirmation" name="password_confirmation" type="password"
-                        autocomplete="new-password" required minlength="8">
-                </div>
+                <label class="field" for="password_confirmation">
+                    <span>Konfirmasi Password Baru</span>
+                    <div class="pw-wrap">
+                        <input type="password" name="password_confirmation" id="password_confirmation"
+                            placeholder="Ulangi password baru" autocomplete="new-password"
+                            minlength="8" required>
+                        <button type="button" class="pw-toggle" aria-label="Tampilkan password">
+                            {!! $eyeSvg !!}
+                        </button>
+                    </div>
+                </label>
             </div>
 
-            <div class="btn-row" style="margin-top: 18px">
-                <button type="submit" class="btn btn-primary">Perbarui Password</button>
+            <div class="pf-card-footer">
+                <button type="submit" class="btn-auth btn-auth--full">Ganti Password</button>
             </div>
         </form>
+    </section>
     </div>
 
-    <div class="btn-row" style="margin-top: 24px">
-        <a class="btn btn-secondary" href="{{ route('foods.index') }}">Lihat katalog makanan</a>
-        <form class="inline-form" action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button class="btn btn-secondary" type="submit">Keluar</button>
-        </form>
-    </div>
+    {{-- Tombol Keluar horizontal memanjang di paling bawah --}}
+    <form action="{{ route('logout') }}" method="POST" class="pf-logout-container">
+        @csrf
+        <button type="submit" class="btn-logout-full">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>
+            Keluar
+        </button>
+    </form>
+</div>
 @endsection
+

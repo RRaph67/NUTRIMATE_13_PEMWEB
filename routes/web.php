@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/foods')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,10 @@ Route::redirect('/', '/foods')->name('home');
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function (): void {
-    Route::get('/register', [AuthController::class, 'create'])->name('register');
+    Route::get('/register', fn () => redirect()->route('home'))->name('register');
     Route::post('/register', [AuthController::class, 'store'])->middleware('throttle:10,1');
 
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/login', fn () => redirect()->route('home'))->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin'])->middleware('throttle:10,1');
 });
 

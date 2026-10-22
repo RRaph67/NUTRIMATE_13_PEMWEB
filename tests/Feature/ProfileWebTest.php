@@ -14,7 +14,7 @@ class ProfileWebTest extends TestCase
     public function test_guest_cannot_access_profile_page(): void
     {
         $this->get(route('profile.show'))
-            ->assertRedirect(route('login'));
+            ->assertRedirect(route('home'));
     }
 
     public function test_user_can_view_profile_page(): void

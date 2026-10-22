@@ -5,51 +5,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Nutrimate — katalog makanan lengkap dengan informasi harga, porsi, dan nilai gizi.">
-    <title>@yield('title', 'Nutrimate')</title>
+    <meta name="description" content="NutriMate — Gizi terjaga, Hemat Terasa. Katalog makanan lengkap dengan informasi harga, porsi, dan nilai gizi.">
+    <title>@yield('title', 'NutriMate')</title>
+
+    <!-- Google Font: Poppins (rules.md §4.1) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
     <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
 
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="{{ auth()->check() ? route('foods.index') : route('login') }}">
-                <span class="brand-mark" aria-hidden="true">🥗</span> Nutrimate
-            </a>
+    <!-- Navbar global reusable -->
+    @include('partials.navbar')
 
-            <nav class="nav" aria-label="Navigasi utama">
-                @auth
-                    <a href="{{ route('foods.index') }}"
-                        class="{{ request()->routeIs('foods.*') ? 'is-active' : '' }}"
-                        @if (request()->routeIs('foods.*')) aria-current="page" @endif>
-                        Makanan
-                    </a>
-                    <a href="{{ route('profile.show') }}"
-                        class="{{ request()->routeIs('profile.*') ? 'is-active' : '' }}"
-                        @if (request()->routeIs('profile.*')) aria-current="page" @endif>
-                        Profil
-                    </a>
-                    <form class="inline-form" action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button class="btn-logout" type="submit">Keluar</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}"
-                        class="{{ request()->routeIs('login') ? 'is-active' : '' }}"
-                        @if (request()->routeIs('login')) aria-current="page" @endif>
-                        Masuk
-                    </a>
-                    <a href="{{ route('register') }}"
-                        class="{{ request()->routeIs('register') ? 'is-active' : '' }}"
-                        @if (request()->routeIs('register')) aria-current="page" @endif>
-                        Daftar
-                    </a>
-                @endauth
-            </nav>
-        </div>
-    </header>
+    <!-- Sidebar mobile & tablet reusable -->
+    @include('partials.sidebar')
 
     <main id="main-content" class="site-main" tabindex="-1">
         <div class="container">
@@ -58,11 +32,8 @@
         </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; {{ date('Y') }} Nutrimate — data makanan tersimpan di PostgreSQL (Supabase).</p>
-        </div>
-    </footer>
+    <!-- Footer global reusable -->
+    @include('partials.footer')
 
     @stack('scripts')
 </body>

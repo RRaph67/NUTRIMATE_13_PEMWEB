@@ -109,8 +109,8 @@ class FoodFormPagesTest extends TestCase
     {
         $food = Food::factory()->create();
 
-        $this->get('/foods/create')->assertRedirect(route('login'));
-        $this->get('/foods/'.$food->id)->assertRedirect(route('login'));
-        $this->get('/foods/'.$food->id.'/edit')->assertRedirect(route('login'));
+        $this->get('/foods/create')->assertRedirect(route('home'));
+        $this->get('/foods/'.$food->id)->assertRedirect(route('home'));
+        $this->get('/foods/'.$food->id.'/edit')->assertRedirect(route('home'));
     }
 }
