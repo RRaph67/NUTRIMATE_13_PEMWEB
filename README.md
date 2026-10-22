@@ -58,7 +58,7 @@ NutriMate adalah aplikasi web pengelolaan nutrisi dan pengatur pola makan harian
 
 | Category | Technology | Purpose |
 | --- | --- | --- |
-| **Backend Framework** | Laravel 12 | Arsitektur MVC, Eloquent ORM, Routing, Authentication, Request Validation, Migrations & Seeders |
+| **Backend Framework** | Laravel 13 | Arsitektur MVC, Eloquent ORM, Routing, Authentication, Request Validation, Migrations & Seeders |
 | **Language** | PHP 8.3+ | Logika backend modern dengan strict types dan constructor property promotion |
 | **Database** | PostgreSQL (Supabase Cloud) | Penyimpanan data relasional aman (Users, Profiles, Foods, Nutrisi) |
 | **Frontend UI** | Blade Templating, Vanilla CSS, Vanilla JS | Antarmuka ringan, responsif, komponen modular reusable (`layouts/`, `partials/`) |
